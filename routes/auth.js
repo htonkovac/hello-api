@@ -11,7 +11,13 @@ module.exports = function (passport) {
         var user = req.user;
 
         if (user) {
-            return res.send({status: 200, message: "You're logged in", user: user, login_time: req.session.login_time});
+            return res.send({
+                status: 200,
+                message: "You're logged in", 
+                user: user,
+                login_time: req.session.login_time,
+                pod_name:process.env.POD_NAME || "No name provided",
+                node_name: process.env.NODE_NAME || "No name provided"});
         } else {
             return res.send({status: 401, message: "You're not logged in"});
         }
