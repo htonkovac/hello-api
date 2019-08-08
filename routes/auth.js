@@ -11,7 +11,7 @@ module.exports = function (passport) {
         var user = req.user;
 
         if (user) {
-            return res.send({status: 200, message: "You're logged in", user: user});
+            return res.send({status: 200, message: "You're logged in", user: user, login_time: req.session.login_time});
         } else {
             return res.send({status: 401, message: "You're not logged in"});
         }
@@ -35,6 +35,7 @@ module.exports = function (passport) {
                 if (err) {
                     return next(err);
                 }
+		    req.session.login_time = new Date().toISOString();
                 return res.status(200).send({status: 200, message: info, user: user});
             });
         })(req, res, next);
