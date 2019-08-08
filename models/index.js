@@ -3,14 +3,15 @@
 var fs = require("fs");
 var path = require("path");
 var Sequelize = require("sequelize");
-var env = process.env.NODE_ENV || "development";
-var config = require(path.join(__dirname, '..', 'config', 'dbconfig.json'))[env];
 
-if (process.env.DATABASE_URL) {
-    var sequelize = new Sequelize(process.env.DATABASE_URL);
-} else {
-    var sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+   
+var sequelize = new Sequelize(
+    process.env.DB_DATABASE_NAME || "hello-api-database", 
+    process.env.DB_USERNAME || "root" ,
+    process.env.DB_PASSWORD || "password" ,
+    {"host": process.env.DB_HOST || "127.0.0.1",
+       "dialect": "mysql"});
+
 var db = {};
 
 fs
