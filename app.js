@@ -11,6 +11,8 @@ require('./config/passport')(passport);
 var redis = require('redis');
 var redisClient = redis.createClient({ host: process.env.REDIS_HOST || 'localhost', port: 6379});
 var redisStore = require('connect-redis')(session);
+
+redisClient.on('error', function(err){ throw err});
 var app = express();
 
 

@@ -9,9 +9,20 @@ var sequelize = new Sequelize(
     process.env.DB_DATABASE_NAME || "hello-api-database", 
     process.env.DB_USERNAME || "root" ,
     process.env.DB_PASSWORD || "password" ,
-    {"host": process.env.DB_HOST || "127.0.0.1",
+    {"host": process.env.DB_HOST || "localhost",
        "dialect": "mysql"});
 
+sequelize
+       .authenticate()
+       .then(() => {
+         console.log('Connection to DB has been established successfully.');
+       })
+       .catch(err => {
+           console.error(err)
+           //throw err;
+           //This app is for some reason not crashing when it is unable to make a DB connection, throwing doesn't stop the process either. Therefore we call process.exit maanually as a dirty fix
+           process.exit(1);
+       });
 var db = {};
 
 fs
