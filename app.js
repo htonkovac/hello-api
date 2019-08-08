@@ -5,25 +5,29 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
-var redis = require('redis');
 var session = require('express-session');
 var passport = require('passport');
 require('./config/passport')(passport);
 
+
+var redis = require('redis');
+var redisClient = redis.createClient({ host: 'localhost', port: 6379});
+var redisStore = require('connect-redis')(session);
 var app = express();
 
-var rds = redis.createClient({port: 6379, host: 'localhost', db: 1});
 app.use(bodyParser.json());
 app.use(cookieParser('random-key'));
-app.use(cookieSession({secret: "random-key"}));
+//app.use(cookieSession({secret: "random-key"}));
 var sessionMiddleware = session({
-    store: rds, // XXX redis server config
+    name: "custom_session_cookie_name",
+    store: new redisStore({client: redisClient}),
     secret: "random-key",
-    resave: true,
-    saveUninitialized: false
+    resave: false,
+    saveUninitialized: true
 });
 
 app.use(sessionMiddleware);
+
 app.use(passport.initialize());
 app.use(passport.session());
 
