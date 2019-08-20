@@ -10,14 +10,21 @@ module.exports = function (passport) {
     router.get('/', function (req, res, next) {
         var user = req.user;
 
+        
+        var podName = process.env.POD_NAME || "No name provided"
+        var nodeName = process.env.NODE_NAME || "No name provided"
+        
+        var podSufix = podName.split("-");
+        var podSufix = podSufix[podSufix.length -1]
+
         if (user) {
             return res.send({
-                status: 200,
-                message: "You're logged in", 
-                user: user,
-                login_time: req.session.login_time,
-                pod_name:process.env.POD_NAME || "No name provided",
-                node_name: process.env.NODE_NAME || "No name provided"});
+                user: user.email,
+                session_content: req.session.login_time,
+                pod_full_name:podName,
+                pod_name:podSufix,
+                node_name: nodeName,
+                });
         } else {
             return res.send({status: 401, message: "You're not logged in"});
         }
